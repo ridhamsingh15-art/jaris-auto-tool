@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JARVIS Auto-Pilot — Settings &amp; Policy Studio</title>
+  <link rel="stylesheet" href="options.css" />
+</head>
+<body>
+  <div class="options-container">
+    <header class="top-header">
+      <div>
+        <h1 class="page-title">JARVIS Auto-Pilot — Configuration &amp; Checkpoint Studio</h1>
+        <p class="page-subtitle">
+          Persistent Manifest V3 settings for Windows 11 Project JARVIS engineering sessions on chatgpt.com
+        </p>
+      </div>
+      <div class="header-actions">
+        <span id="optionsStatusFeedback" class="feedback-text" role="status" aria-live="polite"></span>
+        <button type="button" id="saveAllOptionsBtn" class="btn-primary">Save Configuration</button>
+      </div>
+    </header>
+
+    <main class="options-grid">
+      <!-- Left Column: Project Instructions, Objective, and Milestone Queue -->
+      <section class="panel">
+        <h2 class="section-title">01. Project Objective &amp; Pinned Context</h2>
+
+        <label class="field-group">
+          <span class="field-label">Session Engineering Objective</span>
+          <textarea id="optObjective" rows="3" class="textarea-input"></textarea>
+        </label>
+
+        <label class="field-group">
+          <span class="field-label">
+            Pinned Project JARVIS Context (Initial Engineering Context — Never Invent Repo State)
+          </span>
+          <textarea id="optContext" rows="7" class="textarea-input mono-input"></textarea>
+        </label>
+
+        <label class="field-group">
+          <span class="field-label">
+            Active Milestone Target (Synchronized with Queue Head &amp; Next Planned Action)
+          </span>
+          <input type="text" id="optCurrentMilestone" class="text-input" />
+        </label>
+
+        <label class="field-group">
+          <span class="field-label">
+            Pending Milestones Queue (One well-defined milestone per line; Line 1 is the Active Task)
+          </span>
+          <textarea id="optPendingTasks" rows="5" class="textarea-input mono-input"></textarea>
+        </label>
+
+        <div class="field-group">
+          <span class="field-label">Derived Next Planned Action (Canonical Active Task Readout)</span>
+          <div id="optNextActionReadout" class="readout-box mono-input"></div>
+        </div>
+
+        <div class="info-callout">
+          <strong>Canonical Active-Task Rule &amp; 7-Point Continuation Policy:</strong>
+          <p class="callout-subtext">
+            <code>pendingTasks[0]</code>, <code>currentMilestone</code>, and <code>nextProposedAction</code> are strictly synchronized on save and turn completion. Every prompt enforces:
+          </p>
+          <ol class="policy-list">
+            <li>Review the supplied project context and latest checkpoint.</li>
+            <li>Identify the next incomplete and well-defined task.</li>
+            <li>Make only evidence-supported claims about project progress.</li>
+            <li>Work on that task without needlessly repeating previous work.</li>
+            <li>Report files changed, tests performed, failures, and unresolved risks.</li>
+            <li>Specify the next proposed milestone.</li>
+            <li>Stop and request intervention when the project state is ambiguous.</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- Right Column: Safety Limits, Overnight Recovery, and Checkpoint Management -->
+      <div class="right-column">
+        <section class="panel">
+          <h2 class="section-title">02. Execution Mode &amp; Safety Boundaries</h2>
+
+          <div class="two-col-fields">
+            <label class="field-group">
+              <span class="field-label">Default Operation Mode</span>
+              <select id="optMode" class="select-input">
+                <option value="SUPERVISED">Supervised Mode (Approve Every Turn)</option>
+                <option value="AUTONOMOUS">Bounded Autonomous Mode</option>
+              </select>
+            </label>
+
+            <label class="field-group">
+              <span class="field-label">Max Turns Per Session</span>
+              <input type="number" id="optMaxTurns" min="1" max="100" class="text-input mono-input" />
+            </label>
+
+            <label class="field-group">
+              <span class="field-label">Max Total Runtime (Minutes)</span>
+              <input type="number" id="optMaxRuntimeMin" min="1" max="1440" class="text-input mono-input" />
+            </label>
+
+            <label class="field-group">
+              <span class="field-label">Minimum Delay Between Prompts (Seconds)</span>
+              <input type="number" id="optPromptDelaySec" min="1" max="600" class="text-input mono-input" />
+            </label>
+
+            <label class="field-group">
+              <span class="field-label">Max Bounded Retries</span>
+              <input type="number" id="optMaxRetries" min="1" max="10" class="text-input mono-input" />
+            </label>
+
+            <label class="field-group">
+              <span class="field-label">Backoff Base Delay (Milliseconds)</span>
+              <input type="number" id="optBackoffBaseMs" min="500" max="30000" class="text-input mono-input" />
+            </label>
+          </div>
+
+          <label class="checkbox-row">
+            <input type="checkbox" id="optWakeLock" />
+            <span>
+              Request Screen Wake Lock while session is active (Note: Cannot guarantee Windows 11 will stay awake or prevent OS sleep, network drops, or service interruptions).
+            </span>
+          </label>
+        </section>
+
+        <section class="panel">
+          <h2 class="section-title">03. Versioned Checkpoint Inspection &amp; Recovery</h2>
+          <p class="helper-text">
+            Inspect, export, or safely import a Schema v2 (or legacy v1) checkpoint JSON file. Selecting a file or clicking <strong>Validate &amp; Preview Import</strong> stages a non-destructive preview requiring explicit confirmation before committing to <code>chrome.storage.local</code>.
+          </p>
+
+          <!-- File Picker Control -->
+          <div class="file-picker-box">
+            <label for="optCheckpointFileInput" class="file-picker-label">
+              Choose Checkpoint JSON File (.json)
+            </label>
+            <input
+              type="file"
+              id="optCheckpointFileInput"
+              accept=".json,application/json"
+              class="file-input"
+            />
+            <span id="optSelectedFileName" class="file-name-text">
+              No file selected (or paste JSON manually below)
+            </span>
+          </div>
+
+          <!-- Raw JSON Textbox -->
+          <label class="field-group">
+            <span class="field-label">Checkpoint JSON Payload (Editable / Paste Target)</span>
+            <textarea id="optCheckpointJson" rows="9" class="textarea-input mono-input"></textarea>
+          </label>
+
+          <!-- Validation / Import Error Banner -->
+          <div id="optImportErrorBox" class="import-error-box hidden" role="alert">
+            <strong id="optImportErrorCode">VALIDATION_ERROR</strong>
+            <p id="optImportErrorText"></p>
+          </div>
+
+          <!-- Staged Import Preview & Explicit Confirmation Box -->
+          <div id="optImportPreviewBox" class="import-preview-box hidden" role="region" aria-label="Checkpoint Import Preview">
+            <div class="preview-header">
+              <strong>Staged Checkpoint Import Preview (Not Yet Committed)</strong>
+              <span id="prevSchemaBadge" class="preview-schema">Schema v2</span>
+            </div>
+            <div class="preview-grid">
+              <div><span class="preview-key">Session ID:</span> <code id="prevSessionId"></code></div>
+              <div><span class="preview-key">Session State:</span> <code id="prevState"></code></div>
+              <div><span class="preview-key">Operation Mode:</span> <code id="prevMode"></code></div>
+              <div><span class="preview-key">Turn Count:</span> <code id="prevTurns"></code></div>
+              <div><span class="preview-key">Pending Tasks:</span> <code id="prevPendingCount"></code></div>
+              <div><span class="preview-key">Unresolved Lock:</span> <code id="prevUnresolved"></code></div>
+              <div class="preview-full-row">
+                <span class="preview-key">Active Milestone:</span>
+                <div id="prevMilestone" class="preview-val-block"></div>
+              </div>
+              <div class="preview-full-row">
+                <span class="preview-key">Next Proposed Action:</span>
+                <div id="prevNextAction" class="preview-val-block"></div>
+              </div>
+            </div>
+            <div id="prevWarningsBox" class="preview-warnings hidden"></div>
+            <div class="button-row preview-actions">
+              <button type="button" id="confirmImportCheckpointBtn" class="btn-primary">
+                Confirm &amp; Commit Checkpoint Import
+              </button>
+              <button type="button" id="cancelImportCheckpointBtn" class="btn-secondary">
+                Cancel Staged Import
+              </button>
+            </div>
+          </div>
+
+          <div class="button-row">
+            <button type="button" id="importCheckpointBtn" class="btn-secondary">
+              Validate &amp; Preview JSON
+            </button>
+            <button type="button" id="exportCheckpointBtn" class="btn-secondary">
+              Download Checkpoint JSON
+            </button>
+            <button type="button" id="resetCheckpointBtn" class="btn-secondary" title="Resets turn progress while preserving your saved objective and task queue">
+              Reset Session Progress
+            </button>
+            <button type="button" id="factoryResetCheckpointBtn" class="btn-danger" title="Wipes custom settings and restores default Schema v2 configuration">
+              Restore Factory Defaults
+            </button>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script src="storage.js"></script>
+  <script src="local-agent-bridge.js"></script>
+  <script src="dom-adapter.js"></script>
+  <script src="session-controller.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

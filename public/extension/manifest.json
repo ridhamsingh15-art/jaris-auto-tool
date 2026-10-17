@@ -1,0 +1,52 @@
+{
+  "manifest_version": 3,
+  "name": "JARVIS Auto-Pilot",
+  "short_name": "JARVIS Auto-Pilot",
+  "version": "1.2.0",
+  "description": "Deterministic long-duration Project JARVIS engineering session controller for ChatGPT with versioned checkpoints, 12-state recovery, and duplicate-submission prevention.",
+  "permissions": [
+    "storage",
+    "alarms",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://chatgpt.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "JARVIS Auto-Pilot Console",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chatgpt.com/*"
+      ],
+      "js": [
+        "storage.js",
+        "local-agent-bridge.js",
+        "dom-adapter.js",
+        "session-controller.js",
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

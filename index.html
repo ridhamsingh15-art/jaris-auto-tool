@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JARVIS Auto-Pilot — Chrome Extension & Engineering Workbench</title>
+    <meta name="description" content="Manifest V3 Chrome Extension and Engineering Workbench for long-duration Project JARVIS sessions on ChatGPT with persistent checkpoints, 12-state recovery, and automated verification." />
+    <meta property="og:title" content="JARVIS Auto-Pilot — Chrome Extension & Engineering Workbench" />
+    <meta property="og:description" content="Manifest V3 Chrome Extension and Engineering Workbench for long-duration Project JARVIS sessions on ChatGPT with persistent checkpoints, 12-state recovery, and automated verification." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  </head>
+  <body class="bg-[#0B0F17] text-slate-50 antialiased">
+    <div id="root"></div>
+    <script src="/extension/storage.js"></script>
+    <script src="/extension/local-agent-bridge.js"></script>
+    <script src="/extension/dom-adapter.js"></script>
+    <script src="/extension/session-controller.js"></script>
+    <script src="/extension/popup.js"></script>
+    <script src="/extension/options.js"></script>
+    <script src="/extension/tests/extension.test.js"></script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JARVIS Auto-Pilot</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div class="popup-shell">
+    <!-- Top Header -->
+    <header class="top-bar">
+      <div class="brand-group">
+        <span class="brand-title">JARVIS Auto-Pilot</span>
+        <span class="meta-inline" id="schemaBadge">Schema v2 · MV3</span>
+      </div>
+      <button type="button" id="openOptionsBtn" class="btn-secondary btn-compact">Settings</button>
+    </header>
+
+    <!-- Status & Mode Banner -->
+    <section class="status-strip">
+      <div class="status-row">
+        <div class="status-main">
+          <span class="field-label">Session State</span>
+          <div class="state-readout">
+            <span class="state-indicator" id="stateIndicator" data-state="IDLE">IDLE</span>
+            <span class="meta-separator">·</span>
+            <span class="mode-readout" id="modeReadout">Supervised Mode</span>
+          </div>
+        </div>
+        <button type="button" id="emergencyStopBtn" class="btn-danger" title="Immediately stop all automated actions">
+          Emergency Stop
+        </button>
+      </div>
+      <div class="checkpoint-meta-row">
+        <span id="checkpointStatusText">Checkpoint verified</span>
+        <span class="meta-separator">·</span>
+        <span id="lastActivityText" class="mono-num">Last activity: Never</span>
+      </div>
+    </section>
+
+    <!-- Error / Interruption Alert Box (Hidden when nominal) -->
+    <section id="errorBanner" class="alert-box hidden" role="alert">
+      <div class="alert-header">
+        <strong id="errorCodeText">INTERRUPTED</strong>
+      </div>
+      <p id="errorMessageText" class="alert-message"></p>
+      <div id="ambiguityResolutionBar" class="ambiguity-actions hidden">
+        <button type="button" id="confirmSentBtn" class="btn-secondary btn-compact">
+          Confirm Message Appeared in ChatGPT
+        </button>
+        <button type="button" id="confirmNotSentBtn" class="btn-secondary btn-compact">
+          Message Did Not Appear (Re-stage)
+        </button>
+      </div>
+    </section>
+
+    <!-- Primary Execution Controls -->
+    <section class="control-bar">
+      <button type="button" id="startBtn" class="btn-primary">Start Session</button>
+      <button type="button" id="approveBtn" class="btn-accent hidden">Approve &amp; Send Turn</button>
+      <button type="button" id="pauseBtn" class="btn-secondary">Pause</button>
+      <button type="button" id="resumeBtn" class="btn-secondary hidden">Resume</button>
+    </section>
+
+    <!-- Telemetry Grid -->
+    <section class="telemetry-grid">
+      <div class="telemetry-cell">
+        <span class="field-label">Completed Turns</span>
+        <span class="telemetry-val mono-num" id="turnsCompletedVal">0 / 8</span>
+      </div>
+      <div class="telemetry-cell">
+        <span class="field-label">Mode Select</span>
+        <select id="operationModeSelect" class="select-compact">
+          <option value="SUPERVISED">Supervised (Approve Each)</option>
+          <option value="AUTONOMOUS">Bounded Autonomous</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- Configurable Limits Row -->
+    <section class="limits-grid">
+      <label class="field-block">
+        <span class="field-label">Max Turns</span>
+        <input type="number" id="maxTurnsInput" class="input-mono" min="1" max="100" value="8" />
+      </label>
+      <label class="field-block">
+        <span class="field-label">Max Runtime (min)</span>
+        <input type="number" id="maxRuntimeInput" class="input-mono" min="1" max="1440" value="120" />
+      </label>
+      <label class="field-block">
+        <span class="field-label">Prompt Delay (sec)</span>
+        <input type="number" id="promptDelayInput" class="input-mono" min="1" max="600" value="5" />
+      </label>
+    </section>
+
+    <!-- Objective & Milestone Section -->
+    <section class="form-section">
+      <label class="field-block">
+        <span class="field-label">Current Project Objective</span>
+        <textarea id="objectiveInput" rows="2" class="textarea-field"></textarea>
+      </label>
+
+      <label class="field-block">
+        <span class="field-label">Current Milestone</span>
+        <input type="text" id="milestoneInput" class="text-field" />
+      </label>
+
+      <div class="field-block">
+        <div class="field-header-row">
+          <span class="field-label">Next Planned Action</span>
+          <span class="meta-inline">READ-ONLY · DERIVED</span>
+        </div>
+        <div id="nextActionReadout" class="readout-box" aria-readonly="true"></div>
+      </div>
+
+      <div class="field-block">
+        <div class="field-header-row">
+          <label for="contextInput" class="field-label">Pinned Project JARVIS Context</label>
+          <button type="button" id="saveContextBtn" class="btn-link">Save Configuration</button>
+        </div>
+        <textarea id="contextInput" rows="4" class="textarea-field mono-small"></textarea>
+      </div>
+    </section>
+
+    <footer class="popup-footer">
+      <span id="sessionIdText" class="mono-num">Session: --</span>
+      <span id="saveFeedbackText" class="save-feedback"></span>
+    </footer>
+  </div>
+
+  <script src="storage.js"></script>
+  <script src="local-agent-bridge.js"></script>
+  <script src="dom-adapter.js"></script>
+  <script src="session-controller.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

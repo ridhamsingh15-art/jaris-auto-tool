@@ -1,0 +1,6 @@
+{
+  "name": "JARVIS Auto-Pilot — Chrome Extension & Workbench",
+  "description": "Manifest V3 Chrome Extension and Engineering Workbench for long-duration Project JARVIS sessions on ChatGPT with persistent checkpoints, 12-state recovery, and automated verification.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
